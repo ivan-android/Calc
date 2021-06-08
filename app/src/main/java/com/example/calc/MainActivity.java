@@ -12,7 +12,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
-    Calculator calculator = new Calculator();
+    private Calculator calculator = new Calculator();
 
 
     @Override
