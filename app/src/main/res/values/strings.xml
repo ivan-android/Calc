@@ -19,4 +19,9 @@
     <string name="_res">=</string>
     <string name="result_text">Результат</string>
     <string name="c">C</string>
+    <string name="settings">S</string>
+    <string name="text_chose">Выберите тему:</string>
+    <string name="material_light">Светлая тема</string>
+    <string name="material_dark">Темная тема</string>
+    <string name="ok">ОК</string>
 </resources>

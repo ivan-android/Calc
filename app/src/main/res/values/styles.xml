@@ -15,6 +15,9 @@
     </style>
 
     <style name="AppThemeDark" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">#242A2B</item>
+        <item name="colorPrimaryDark">#718C89</item>
+        <item name="colorAccent">#0D1F22</item>
     </style>
 
 </resources>
