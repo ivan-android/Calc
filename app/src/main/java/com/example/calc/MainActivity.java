@@ -1,27 +1,55 @@
 package com.example.calc;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_SETTING_ACTIVITY = 99;
+    private static final String APP_THEME = "APP_THEME";
+
     private TextView textView;
-    private Calculator calculator = new Calculator();
+    private Calculator calculator;
+    private Settings settings;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPref = getSharedPreferences(Constants.YOUR_SETTINGS, MODE_PRIVATE);
+        settings = new Settings(sharedPref.getInt(APP_THEME, Constants.THEME_LIGHT_ID));
+        setThemeBySettings(settings);
+
         setContentView(R.layout.activity_main);
 
         textView = findViewById(R.id.resultTextView);
+        calculator = new Calculator();
         initButtons();
+    }
+
+    private void setThemeBySettings (Settings settings) {
+
+            switch(settings.getThemeId()){
+                case Constants.THEME_LIGHT_ID:
+                     setTheme(R.style.AppThemeLight);
+                     break;
+                case Constants.THEME_DARK_ID:
+                    setTheme(R.style.AppThemeDark);
+                    break;
+                default:
+                    setTheme(R.style.AppThemeLight);
+        }
     }
 
     public void initButtons() {
@@ -145,6 +173,33 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(String.format(Locale.getDefault(), "%s", calculator.getResult()));
             }
         });
+        ImageButton buttonSettings = findViewById(R.id.button_settings);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivityForResult(settingsIntent, REQUEST_CODE_SETTING_ACTIVITY);
+
+            }
+        });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != REQUEST_CODE_SETTING_ACTIVITY) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        if (resultCode == RESULT_OK){
+
+            settings = data.getParcelableExtra(Constants.YOUR_SETTINGS);
+            SharedPreferences sharedPref = getSharedPreferences(Constants.YOUR_SETTINGS, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(APP_THEME, settings.getThemeId());
+            editor.apply();
+
+            recreate();
+        }
     }
 
     private void setTextViewAfterBtn (String numberButton) {
